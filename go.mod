@@ -1,3 +1,3 @@
-module github.com/chandlersong/GoStudy
+module GoStudy
 
 go 1.12
