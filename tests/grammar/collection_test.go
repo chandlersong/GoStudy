@@ -90,3 +90,22 @@ func TestSliceAppend(t *testing.T) {
 		t.Logf("index is %d,value is %d", key, value)
 	}
 }
+
+func TestMap(t *testing.T) {
+
+	dict1 := make(map[string]int)
+
+	t.Logf("map is %v", dict1)
+
+	dict2 := map[string]int{"red": 1}
+	t.Logf("map2 is %v", dict2)
+
+	value, exists := dict1["blue"]
+	t.Logf("%v exists %v", value, exists)
+
+	delete(dict2, "red")
+	t.Logf("after delete map2 %v", dict2)
+
+	delete(dict2, "red")
+
+}
