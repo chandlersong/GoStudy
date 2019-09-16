@@ -82,13 +82,30 @@ func TestSliceAppend(t *testing.T) {
 
 	biggerSlice[0] = 110
 
-	t.Logf("old slice is %d, the value of 3 has changed", slice)
-	t.Logf("new slice is %d", newSlice)
+	printCompareSlice(t, slice, newSlice)
 	t.Logf("bigger slice is %d, the slice should not share the same array with others when the cap is bigger than others", biggerSlice)
 
 	for key, value := range biggerSlice {
 		t.Logf("index is %d,value is %d", key, value)
 	}
+}
+
+func TestSliceCut(t *testing.T) {
+
+	slice := []int{10, 20, 30, 40, 50, 60, 70, 80, 90}
+
+	newSlice := append(slice[:2], slice[5:]...)
+
+	printCompareSlice(t, slice, newSlice)
+
+	newSlice[0] = 1
+	printCompareSlice(t, slice, newSlice)
+
+}
+
+func printCompareSlice(t *testing.T, slice []int, newSlice []int) {
+	t.Logf("slice %d", slice)
+	t.Logf("new slice %d", newSlice)
 }
 
 func TestMap(t *testing.T) {
