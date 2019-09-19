@@ -49,3 +49,26 @@ func TestCreateObject(t *testing.T) {
 	duration := Duration(1)
 	t.Logf("duration %v", duration)
 }
+
+type notifier interface {
+	notify(t *testing.T)
+}
+
+type user struct {
+	name  string
+	email string
+}
+
+func (u *user) notify(t *testing.T) {
+	t.Logf("sending user email %s<%s> \n",
+		u.name, u.email)
+}
+
+func TestInterface(t *testing.T) {
+	u := &user{"chandler", "chandler605@gmail.com"}
+	sendNotification(u, t)
+}
+
+func sendNotification(n notifier, t *testing.T) {
+	n.notify(t)
+}
