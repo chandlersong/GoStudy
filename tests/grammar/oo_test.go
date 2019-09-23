@@ -59,14 +59,40 @@ type user struct {
 	email string
 }
 
+type admin struct {
+	name  string
+	email string
+}
+
+type manager struct {
+	user
+	level string
+}
+
 func (u *user) notify(t *testing.T) {
 	t.Logf("sending user email %s<%s> \n",
 		u.name, u.email)
 }
 
+func (a admin) notify(t *testing.T) {
+	t.Logf("sending admin email %s<%s> \n",
+		a.name, a.email)
+}
+
 func TestInterface(t *testing.T) {
 	u := &user{"chandler", "chandler605@gmail.com"}
 	sendNotification(u, t)
+
+	a := admin{"chandler", "chandler605@gmail.com"}
+	sendNotification(a, t)
+}
+
+func TestEmbedding(t *testing.T) {
+	m := &manager{
+		user:  user{"chandler", "chandler605@gmail.com"},
+		level: "1",
+	}
+	sendNotification(m, t)
 }
 
 func sendNotification(n notifier, t *testing.T) {
