@@ -6,19 +6,10 @@ import (
 	"testing"
 )
 
-func printUpperCase(wg *sync.WaitGroup, t *testing.T) {
+func printChar(wg *sync.WaitGroup, t *testing.T, character byte) {
 	defer wg.Done()
 	for count := 0; count < 3; count++ {
-		for char := 'A'; char < 'A'+26; char++ {
-			t.Logf("%c", char)
-		}
-	}
-}
-
-func printLowerCase(wg *sync.WaitGroup, t *testing.T) {
-	defer wg.Done()
-	for count := 0; count < 3; count++ {
-		for char := 'a'; char < 'a'+26; char++ {
+		for char := character; char < character+26; char++ {
 			t.Logf("%c", char)
 		}
 	}
@@ -32,8 +23,8 @@ func TestGoRoutine(t *testing.T) {
 
 	t.Log("start run go")
 
-	go printLowerCase(&wg, t)
-	go printUpperCase(&wg, t)
+	go printChar(&wg, t, 'a')
+	go printChar(&wg, t, 'A')
 
 	t.Log("waiting finished")
 	wg.Wait()
