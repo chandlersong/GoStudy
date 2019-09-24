@@ -8,7 +8,8 @@ import (
 )
 
 var (
-	atomicCount int64
+	atomicCounter int64
+	mutexCounter  int64
 )
 
 func printChar(wg *sync.WaitGroup, t *testing.T, character byte) {
@@ -24,8 +25,23 @@ func incAtomicCounter(wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	for count := 0; count < 3; count++ {
-		atomic.AddInt64(&atomicCount, 1)
+		atomic.AddInt64(&atomicCounter, 1)
 		runtime.Gosched()
+	}
+}
+
+func incMutexCounter(wg *sync.WaitGroup, mutex *sync.Mutex) {
+	defer wg.Done()
+
+	for count := 0; count < 3; count++ {
+		mutex.Lock()
+		{
+			value := mutexCounter
+			runtime.Gosched()
+			value++
+			mutexCounter = value
+		}
+		mutex.Unlock()
 	}
 }
 
@@ -56,5 +72,19 @@ func TestAtomicCounter(t *testing.T) {
 
 	t.Log("waiting finished")
 	wg.Wait()
-	t.Logf("finish: and atomicCount is %d", atomicCount)
+	t.Logf("finish: and atomicCounter is %d", atomicCounter)
+}
+
+func TestMutexCounter(t *testing.T) {
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	t.Log("start Atomic Counter")
+	var mutex sync.Mutex
+	go incMutexCounter(&wg, &mutex)
+	go incMutexCounter(&wg, &mutex)
+
+	t.Log("waiting finished")
+	wg.Wait()
+	t.Logf("finish: and mutexCounter is %d", mutexCounter)
 }
