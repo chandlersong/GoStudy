@@ -38,11 +38,11 @@ func TestPlayTennis(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
 	court := make(chan int)
 
-	wg.Add(2)
+	wg.Add(3)
 
 	go player("chandler", court, &wg, t)
 	go player("monica", court, &wg, t)
-
+	go player("a", court, &wg, t)
 	court <- 1
 
 	wg.Wait()
