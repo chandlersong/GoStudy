@@ -25,3 +25,16 @@ func TestCreateClient(t *testing.T) {
 	svc := dynamodb.New(sess, aws.NewConfig().WithLogLevel(aws.LogDebugWithHTTPBody))
 	fmt.Printf("svc is %v \n", svc)
 }
+
+func TestCreateLocalClient(t *testing.T) {
+	sess, err := session.NewSession(&aws.Config{
+		Endpoint: aws.String("http://cloudTest:18080"),
+	})
+
+	if err != nil {
+		fmt.Printf("The returned error is %s.\n", err)
+	}
+	fmt.Printf("sess is %v \n", sess)
+	svc := dynamodb.New(sess, aws.NewConfig().WithLogLevel(aws.LogDebugWithHTTPBody))
+	fmt.Printf("svc is %v \n", svc)
+}
