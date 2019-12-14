@@ -8,6 +8,11 @@ export GO111MODULE=on
 default:
 	@echo hello world of go lambda
 
+configure:
+	@echo downloading dependency create vender
+	@go get
+	@go mod vendor
+
 listEnv:
 	@echo ${GOOS}
 	@echo ${USERPROFILE}
@@ -17,16 +22,16 @@ clean:
 	@rm -rf build
 	@mkdir build
 
-build: | clean
+build: clean
 	@echo start to build
 	@go build -o build/main main.go
 	
-lambdaPackage: | build
+aws-pacakge: build
 	@echo start to package lambda to main.zip
 	@${USERPROFILE}/Go/bin/build-lambda-zip.exe build/main main.zip
 	@mv main.zip build/
 
-updateLambda: | lambdaPackage
+aws-update: aws-pacakge
 	@echo start to update lambda code
 	@aws lambda  update-function-code \
 	--function-name my-function \
