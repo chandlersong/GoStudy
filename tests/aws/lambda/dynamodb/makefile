@@ -2,7 +2,8 @@ BINARY="example"
 VERSION=1.0.0
 BUILD=`date +%FT%T%z`
 
-GOOS=linux
+export GOOS=linux
+export GO111MODULE=on
 
 default:
 	@echo hello world of go lambda
@@ -22,7 +23,7 @@ build: | clean
 	
 lambdaPackage: | build
 	@echo start to package lambda to main.zip
-	@${USERPROFILE}/Go/bin/build-lambda-zip.exe  build/main main.zip
+	@${USERPROFILE}/Go/bin/build-lambda-zip.exe build/main main.zip
 	@mv main.zip build/
 
 updateLambda: | lambdaPackage

@@ -12,3 +12,4 @@
 *.out
 /.idea
 build
+/tests/aws/lambda/dynamodb/vendor/
