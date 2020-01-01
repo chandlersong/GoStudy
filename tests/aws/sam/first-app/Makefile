@@ -9,16 +9,16 @@ debug_prepare:
 	go build -o dlv github.com/go-delve/delve/cmd/dlv
 
 clean:
-	rm -rf ./hello-world/hello-world
+	rm -rf ./aws-lambda/aws-lambda
 
 debug_build: | clean
-	GOOS=linux GOARCH=amd64 go build -gcflags='-N -l' -o hello-world/hello-world ./hello-world
+	GOOS=linux GOARCH=amd64 go build -gcflags='-N -l' -o aws-lambda/aws-lambda ./aws-lambda
 
 debug: | debug_build
 	sam local start-api -d 5986 --debugger-path dlv --debug-args "-delveAPI=2"
 
 build: | clean
-	GOOS=linux GOARCH=amd64 go build -o hello-world/hello-world ./hello-world
+	GOOS=linux GOARCH=amd64 go build -o aws-lambda/aws-lambda ./aws-lambda
 
 api: | build
 	sam local start-api
