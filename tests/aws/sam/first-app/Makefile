@@ -1,4 +1,4 @@
-.PHONY: deps clean build debug_prepare clean debug_build debug
+.PHONY: deps clean build debug_prepare clean debug_build debug api_paramter
 
 .PHONY: deps clean build
 
@@ -21,4 +21,7 @@ build: | clean
 	GOOS=linux GOARCH=amd64 go build -o aws-lambda/aws-lambda ./aws-lambda
 
 api: | build
-	sam local start-api
+	sam local start-api --env-vars env_test.json
+
+api_paramter: | build
+	sam local start-api --parameter-overrides SomeVar=define_out_side

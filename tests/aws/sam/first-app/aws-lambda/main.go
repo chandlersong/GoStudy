@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -40,8 +41,10 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		return events.APIGatewayProxyResponse{}, ErrNoIP
 	}
 
+	tableName := os.Getenv("SOME_VAR")
+
 	return events.APIGatewayProxyResponse{
-		Body:       fmt.Sprintf("Hello, %v", string(ip)),
+		Body:       fmt.Sprintf("Hello, %v,and value is %v", string(ip), tableName),
 		StatusCode: 200,
 	}, nil
 }
