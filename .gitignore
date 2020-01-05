@@ -13,3 +13,4 @@
 /.idea
 build
 /tests/aws/lambda/dynamodb/vendor/
+/tests/aws/sam/first-app/aws-lambda/aws-lambda

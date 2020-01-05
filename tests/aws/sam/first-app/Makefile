@@ -1,6 +1,4 @@
-.PHONY: deps clean build debug_prepare clean debug_build debug api_paramter
-
-.PHONY: deps clean build
+.PHONY: deps clean build debug_prepare clean debug_build debug api_paramter cli
 
 debug_prepare:
 	rm -rf dlv
@@ -18,10 +16,28 @@ debug: | debug_build
 	sam local start-api -d 5986 --debugger-path dlv --debug-args "-delveAPI=2"
 
 build: | clean
-	GOOS=linux GOARCH=amd64 go build -o aws-lambda/aws-lambda ./aws-lambda
+	GOOS=linux \
+	GOARCH=amd64 \
+	CGO_ENABLED=0 \
+	go build -o aws-lambda/aws-lambda ./aws-lambda
+
+cl_build: clean
+	GOOS=linux \
+	go build -v -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o aws-lambda/aws-lambda ./aws-lambda
 
 api: | build
 	sam local start-api --env-vars env_test.json
 
 api_paramter: | build
 	sam local start-api --parameter-overrides SomeVar=define_out_side
+
+cli: | build
+	-@docker stop sam_cli
+	docker run --rm \
+	           --name sam_cli \
+	           -p 3000:3000 \
+	           -v "$$PWD":/opt/sam \
+	           -v /var/run/docker.sock:/var/run/docker.sock \
+	           -t sam-cli:v1 \
+	           ${PWD}
+

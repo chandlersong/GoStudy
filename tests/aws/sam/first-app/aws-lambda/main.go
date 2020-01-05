@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -32,19 +31,10 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		return events.APIGatewayProxyResponse{}, ErrNon200Response
 	}
 
-	ip, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return events.APIGatewayProxyResponse{}, err
-	}
-
-	if len(ip) == 0 {
-		return events.APIGatewayProxyResponse{}, ErrNoIP
-	}
-
 	tableName := os.Getenv("SOME_VAR")
 
 	return events.APIGatewayProxyResponse{
-		Body:       fmt.Sprintf("Hello, %v,and value is %v", string(ip), tableName),
+		Body:       fmt.Sprintf("Hello, %v", tableName),
 		StatusCode: 200,
 	}, nil
 }
