@@ -24,7 +24,7 @@ clean:
 
 build: clean
 	@echo start to build
-	@go build -o build/main main.go
+	@GOOS=linux GOARCH=amd64 go build -o build/main main.go
 	
 aws-pacakge: build
 	@echo start to package lambda to main.zip
