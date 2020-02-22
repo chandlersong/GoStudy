@@ -1,9 +1,9 @@
-.PHONY: deps clean build debug_prepare clean debug_build debug api_paramter cli
+.PHONY: deps clean build debug_prepare clean debug_build debug api_paramter cli debug_api
 
 debug_prepare:
 	rm -rf dlv
 	mkdir dlv
-	GOARCH=amd64 GOOS=linux
+	GOARCH=amd64 GOOS=linux \
 	go build -o dlv github.com/go-delve/delve/cmd/dlv
 
 clean:
@@ -11,9 +11,6 @@ clean:
 
 debug_build: | clean
 	GOOS=linux GOARCH=amd64 go build -gcflags='-N -l' -o aws-lambda/aws-lambda ./aws-lambda
-
-debug: | debug_build
-	sam local start-api -d 5986 --debugger-path dlv --debug-args "-delveAPI=2"
 
 build: | clean
 	GOOS=linux \
@@ -27,6 +24,13 @@ cl_build: clean
 
 api: | build
 	sam local start-api --env-vars env_test.json
+
+debug_api: | debug_build
+	sam local start-api --env-vars env_test.json \
+						-d 5986 \
+						--debugger-path dlv \
+						--debug-args "-delveAPI=2" \
+						--docker-network deveploer_default
 
 api_paramter: | build
 	sam local start-api --parameter-overrides SomeVar=define_out_side

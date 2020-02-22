@@ -1,36 +1,26 @@
 package main
 
 import (
-	"errors"
+	"context"
 	"fmt"
-	"net/http"
-	"os"
-
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-lambda-go/lambdacontext"
+	"log"
+	"os"
+	"time"
 )
 
 var (
 	// DefaultHTTPGetAddress Default Address
 	DefaultHTTPGetAddress = "https://checkip.amazonaws.com"
-
-	// ErrNoIP No IP found in response
-	ErrNoIP = errors.New("No IP in HTTP response")
-
-	// ErrNon200Response non 200 status code in response
-	ErrNon200Response = errors.New("Non 200 Response found")
 )
 
-func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	resp, err := http.Get(DefaultHTTPGetAddress)
-	if err != nil {
-		return events.APIGatewayProxyResponse{}, err
-	}
+func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
-	if resp.StatusCode != 200 {
-		return events.APIGatewayProxyResponse{}, ErrNon200Response
-	}
-
+	time.Sleep(time.Duration(50) * time.Millisecond)
+	lc, _ := lambdacontext.FromContext(ctx)
+	log.Print(lc.Identity.CognitoIdentityPoolID)
 	tableName := os.Getenv("SOME_VAR")
 
 	return events.APIGatewayProxyResponse{
