@@ -23,6 +23,12 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 	log.Print(lc.Identity.CognitoIdentityPoolID)
 	tableName := os.Getenv("SOME_VAR")
 
+	notExistsInTemplate := os.Getenv("NOT_EXISTS_IN_TEMPLATE")
+	log.Printf("not exists in tempalte can be read %s", notExistsInTemplate)
+
+	notExists := os.Getenv("NOT exists")
+	log.Printf("NOT exists: %s", notExists)
+
 	return events.APIGatewayProxyResponse{
 		Body:       fmt.Sprintf("Hello, %v", tableName),
 		StatusCode: 200,

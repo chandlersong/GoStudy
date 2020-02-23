@@ -1,5 +1,6 @@
 {
   "HelloWorldFunction": {
-    "SOME_VAR": "123"
+    "SOME_VAR": "123",
+    "NOT_EXISTS_IN_TEMPLATE": "true"
   }
 }
