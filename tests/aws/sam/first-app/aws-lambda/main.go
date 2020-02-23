@@ -23,11 +23,17 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 	log.Print(lc.Identity.CognitoIdentityPoolID)
 	tableName := os.Getenv("SOME_VAR")
 
+	globalVar := os.Getenv("GLOBAL_VAR")
+	log.Printf("gobal var is %s", globalVar)
+
 	notExistsInTemplate := os.Getenv("NOT_EXISTS_IN_TEMPLATE")
 	log.Printf("not exists in tempalte can be read %s", notExistsInTemplate)
 
 	notExists := os.Getenv("NOT exists")
 	log.Printf("NOT exists: %s", notExists)
+
+	globalParameter := os.Getenv("SomeVar")
+	log.Printf("gobal parameter: %s", globalParameter)
 
 	return events.APIGatewayProxyResponse{
 		Body:       fmt.Sprintf("Hello, %v", tableName),

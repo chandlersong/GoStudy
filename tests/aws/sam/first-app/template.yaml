@@ -9,6 +9,9 @@ Description: >
 Globals:
   Function:
     Timeout: 60
+    Environment:
+      Variables:
+        GLOBAL_VAR: gobal
 
 Parameters:
   SomeVar:

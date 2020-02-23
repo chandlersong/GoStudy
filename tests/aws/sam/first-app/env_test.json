@@ -2,5 +2,8 @@
   "HelloWorldFunction": {
     "SOME_VAR": "123",
     "NOT_EXISTS_IN_TEMPLATE": "true"
+  },
+  "Parameters": {
+    "GLOBAL_VAR": "local"
   }
 }
