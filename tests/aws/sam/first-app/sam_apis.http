@@ -1,5 +1,5 @@
 #1 hello world lambda
-GET http://127.0.0.1:3000/first
+GET {{host}}/first
 Accept: text/plain
 
 ###
