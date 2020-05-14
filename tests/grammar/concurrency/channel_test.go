@@ -33,17 +33,20 @@ func player(name string, court chan int, wg *sync.WaitGroup, t *testing.T) {
 	}
 }
 
-func TestPlayTennis(t *testing.T) {
-	var wg sync.WaitGroup
-	rand.Seed(time.Now().UnixNano())
-	court := make(chan int)
+func TestChannelRelative(t *testing.T) {
 
-	wg.Add(3)
+	t.Run("TestPlayTennis", func(t *testing.T) {
+		var wg sync.WaitGroup
+		rand.Seed(time.Now().UnixNano())
+		court := make(chan int)
 
-	go player("chandler", court, &wg, t)
-	go player("monica", court, &wg, t)
-	go player("a", court, &wg, t)
-	court <- 1
+		wg.Add(3)
 
-	wg.Wait()
+		go player("chandler", court, &wg, t)
+		go player("monica", court, &wg, t)
+		go player("a", court, &wg, t)
+		court <- 1
+
+		wg.Wait()
+	})
 }

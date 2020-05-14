@@ -83,7 +83,7 @@ func TestDynamodbCrud(t *testing.T) {
 		for a, i := range result.Items {
 			t.Logf("first item is %v", a)
 
-			user := User{}
+			user := new(User)
 
 			err = dynamodbattribute.UnmarshalMap(i, &user)
 			t.Logf("user is %v", user)
