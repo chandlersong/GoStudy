@@ -8,6 +8,7 @@ import (
 )
 
 const MovieTableName = "Movies"
+const UserTableName = "User"
 
 func CreateLocalDB() *dynamodb.DynamoDB {
 	sess, err := session.NewSession(&aws.Config{
