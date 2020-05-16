@@ -5,6 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/bwmarrin/snowflake"
 	"reflect"
 	"strings"
 	"testing"
@@ -18,7 +19,7 @@ type Item struct {
 }
 
 type User struct {
-	Id            int    `json:"id"`
+	Id            int64  `json:"id"`
 	Name          string `json:"name"`
 	Password      string `json:"password"`
 	Platform      string `json:"platform"`
@@ -59,30 +60,32 @@ func TestDynamodbCrud(t *testing.T) {
 		fmt.Println("create Item save successful ")
 	})
 
-	t.Run("save with condition", func(t *testing.T) {
+	t.Run("save with condition none key attribute", func(t *testing.T) {
 		svc := CreateLocalDB()
 		fmt.Printf("svc is %v \n", svc)
 
 		user := User{
-			Id:            0,
-			Name:          "chandler",
+			Id:            6311018584275884701,
+			Name:          "chandlerZ",
 			Password:      "passowrd",
 			Platform:      "bf",
 			CurrentDevice: "bfbf",
 		}
 
+		node, _ := snowflake.NewNode(1)
+		user.Id = node.Generate().Int64()
 		av, _ := dynamodbattribute.MarshalMap(user)
 
 		input := &dynamodb.PutItemInput{
 			Item:                av,
 			TableName:           aws.String(UserTableName),
-			ConditionExpression: aws.String("#Nm <> :abc"),
+			ConditionExpression: aws.String(" attribute_exists(#N) and #N <> :name"),
 			ExpressionAttributeNames: map[string]*string{
-				"#Nm": aws.String("name"),
+				"#N": aws.String("name"),
 			},
 			ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
-				":abc": {
-					S: aws.String("chandler"),
+				":name": {
+					S: aws.String(user.Name),
 				},
 			},
 		}
@@ -99,8 +102,9 @@ func TestDynamodbCrud(t *testing.T) {
 			if !strings.HasPrefix(err.Error(), exception) {
 				t.Fail()
 			}
+			return
 		}
-		fmt.Println("create Item save successful ")
+		t.Fail()
 
 	})
 
