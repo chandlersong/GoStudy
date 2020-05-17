@@ -60,7 +60,11 @@ func TestDynamodbCrud(t *testing.T) {
 		fmt.Println("create Item save successful ")
 	})
 
-	t.Run("save with condition none key attribute", func(t *testing.T) {
+	/***
+	put check non-key attribute can't work
+	for more detail please check https://github.com/aws/aws-sdk-js/issues/1611
+	*/
+	t.Run("save with condition non-key attribute", func(t *testing.T) {
 		svc := CreateLocalDB()
 		fmt.Printf("svc is %v \n", svc)
 
