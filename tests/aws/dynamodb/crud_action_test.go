@@ -113,20 +113,21 @@ func TestDynamodbCrud(t *testing.T) {
 	})
 
 	t.Run("query by index", func(t *testing.T) {
-		svc := CreateLocalDB()
+		svc := CreateRemoteDB()
 
 		result, err := svc.Query(&dynamodb.QueryInput{
-			TableName: aws.String(UserTableName),
-			IndexName: aws.String("user_name_index"),
-			KeyConditions: map[string]*dynamodb.Condition{
-				"name": {
-					ComparisonOperator: aws.String("EQ"),
-					AttributeValueList: []*dynamodb.AttributeValue{
-						{
-							S: aws.String("chandler"),
-						},
-					},
-				}},
+			TableName:              aws.String(UserTableName),
+			IndexName:              aws.String("user_name_index"),
+			KeyConditionExpression: aws.String("#NAME = :name"),
+			ExpressionAttributeNames: map[string]*string{
+				"#NAME": aws.String("name"),
+			},
+			ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+				":name": {
+					S: aws.String("chandler"),
+				},
+			},
+			Limit: aws.Int64(1),
 		})
 
 		if err != nil {

@@ -21,3 +21,14 @@ func CreateLocalDB() *dynamodb.DynamoDB {
 	svc := dynamodb.New(sess, aws.NewConfig().WithLogLevel(aws.LogDebugWithHTTPBody))
 	return svc
 }
+
+func CreateRemoteDB() *dynamodb.DynamoDB {
+	sess, err := session.NewSession(&aws.Config{
+		Region: aws.String("us-east-1"),
+	})
+	if err != nil {
+		fmt.Printf("The returned error is %s.\n", err)
+	}
+	svc := dynamodb.New(sess, aws.NewConfig().WithLogLevel(aws.LogDebugWithHTTPBody))
+	return svc
+}
