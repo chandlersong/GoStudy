@@ -26,6 +26,91 @@ type User struct {
 	CurrentDevice string `json:"currentDevice"`
 }
 
+const TableWithTwoKey = "twoKeyTable"
+
+func TestCreateEnv(t *testing.T) {
+	t.Run("create db with partition key and sort key", func(t *testing.T) {
+		svc := CreateLocalDB()
+
+		hashKey := &dynamodb.KeySchemaElement{
+			AttributeName: aws.String("partitionKey"),
+			KeyType:       aws.String(dynamodb.KeyTypeHash),
+		}
+		rangeKey := &dynamodb.KeySchemaElement{
+			AttributeName: aws.String("sortKey"),
+			KeyType:       aws.String(dynamodb.KeyTypeRange),
+		}
+		input := &dynamodb.CreateTableInput{
+			TableName: aws.String(TableWithTwoKey),
+			KeySchema: []*dynamodb.KeySchemaElement{hashKey, rangeKey},
+			AttributeDefinitions: []*dynamodb.AttributeDefinition{
+				{
+					AttributeName: aws.String("partitionKey"),
+					AttributeType: aws.String(dynamodb.ScalarAttributeTypeN),
+				},
+				{
+					AttributeName: aws.String("sortKey"),
+					AttributeType: aws.String(dynamodb.ScalarAttributeTypeN),
+				},
+			},
+			BillingMode: aws.String(dynamodb.BillingModePayPerRequest),
+		}
+		table, err := svc.CreateTable(input)
+
+		if err != nil {
+			t.Log(err.Error())
+			t.Fatal("error when create table with partition key and range key")
+
+		}
+
+		t.Logf("create %v success", table.String())
+	})
+}
+
+func TestPartitionKeyAndSortKeyQuery(t *testing.T) {
+
+	t.Run("get only by sort key", func(t *testing.T) {
+		/**
+		  Get must base on partition key and sort key
+		*/
+		svc := CreateLocalDB()
+		putItemToTwoKeyTable("1", "1", svc)
+		putItemToTwoKeyTable("2", "1", svc)
+
+		input := &dynamodb.GetItemInput{
+			Key: map[string]*dynamodb.AttributeValue{
+				"sortKey":      {N: aws.String("1")},
+				"partitionKey": {N: aws.String("1")},
+			},
+			TableName: aws.String(TableWithTwoKey),
+		}
+		item, err := svc.GetItem(input)
+
+		if err != nil {
+			t.Fatalf("query fail!!!,%v", err)
+		}
+
+		t.Logf("item is %v", item.Item)
+
+	})
+
+}
+
+func putItemToTwoKeyTable(pKey string, sKey string, svc *dynamodb.DynamoDB) {
+	input := &dynamodb.PutItemInput{
+		Item: map[string]*dynamodb.AttributeValue{
+			"partitionKey": {
+				N: aws.String(pKey),
+			},
+			"sortKey": {
+				N: aws.String(sKey),
+			},
+		},
+		TableName: aws.String(TableWithTwoKey),
+	}
+	_, _ = svc.PutItem(input)
+}
+
 func TestDynamodbCrud(t *testing.T) {
 	t.Run("save items to db", func(t *testing.T) {
 
