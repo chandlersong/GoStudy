@@ -1,0 +1,12 @@
+POST http://localhost:8080/query
+Content-Type: application/json
+
+{
+  "operationName": "findA",
+  "variables": {
+    "test": "JEDI"
+  },
+  "query": "mutation createTodo {\n  createTodo(input: {text: \"todo\", userId: \"1\"}) {\n    user {\n      id\n    }\n    text\n    done\n  }\n}\n\nquery findTodos {\n  todos {\n    text\n    done\n  }\n}\n\nquery findA {\n  todo {\n    text\n    done\n  }\n}\n"
+}
+
+###
